@@ -1,5 +1,4 @@
-import sklearn
-from sklearn.datasets import make_swiss_roll
+from sklearn.datasets import make_swiss_roll, load_digits
 from sklearn.manifold import TSNE, Isomap, SpectralEmbedding
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import Model
@@ -9,8 +8,9 @@ from random import random
 import numpy as np
 
 def __main__():
-    # show_swiss_roll()
+    show_swiss_roll()
     show_cylinder()
+    show_digits()
     return
 
 def show_swiss_roll():
@@ -31,6 +31,16 @@ def show_cylinder():
     run_laplacian_eigenmaps(X, t, 'Cylinder')
     run_TSNE(X, t, 'Cylinder')
     run_autoencoder(X, t, 'Cylinder')
+
+def show_digits():
+    digits = load_digits()
+    X = digits.data
+    t = digits.target
+    show_3d_plot(X, t, 'Digits')
+    run_Isomap(X, t, 'Digits')
+    run_laplacian_eigenmaps(X, t, 'Digits')
+    run_TSNE(X, t, 'Digits')
+    run_autoencoder(X, t, 'Digits')
 
 def point_cylinder():
     theta = random() * 2 * pi
@@ -72,7 +82,7 @@ def run_autoencoder(X, t, label):
     decoder_layer = Dense(X.shape[1], activation='relu')(encoder_layer)
     autoencoder = Model(input_layer, decoder_layer)
     autoencoder.compile(optimizer='adam', loss='mean_squared_error')
-    X_m = (X - X.mean(axis=0)) / X.std(axis=0)
+    X_m = (X - X.mean(axis=0)) / X.std(axis=0).clip(min=1e-6)
     autoencoder.fit(X_m, X_m, epochs=100, batch_size=30, shuffle=True, verbose=0)
     encoder = Model(input_layer, encoder_layer)
     X_encoded = encoder.predict(X)
