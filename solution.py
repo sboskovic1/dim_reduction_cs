@@ -9,12 +9,12 @@ import numpy as np
 
 def __main__():
     show_swiss_roll()
-    show_cylinder()
-    show_digits()
+    # show_cylinder()
+    # show_digits()
     return
 
 def show_swiss_roll():
-    X, t = make_swiss_roll(n_samples=500, noise=0.1, random_state=20)
+    X, t = make_swiss_roll(n_samples=500, noise=0.0, random_state=0)
     show_3d_plot(X, t, 'Swiss Roll')
     run_Isomap(X, t, 'Swiss Roll')
     run_laplacian_eigenmaps(X, t, 'Swiss Roll')
@@ -67,12 +67,12 @@ def run_TSNE(X, t, label):
     show_2d_plot(X_tsne, t, f'{label} after t-SNE')
 
 def run_Isomap(X, t, label):
-    iso = Isomap(n_components=2, n_neighbors=60)
+    iso = Isomap(n_components=2, n_neighbors=6)
     X_iso = iso.fit_transform(X)
     show_2d_plot(X_iso, t, f'{label} after Isomap')
 
 def run_laplacian_eigenmaps(X, t, label):
-    le = SpectralEmbedding(n_components=2, n_neighbors=55)
+    le = SpectralEmbedding(n_components=2, n_neighbors=6)
     X_le = le.fit_transform(X)
     show_2d_plot(X_le, t, f'{label} after Laplacian Eigenmaps')
 
